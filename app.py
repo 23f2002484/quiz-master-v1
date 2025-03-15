@@ -338,7 +338,13 @@ def student_dashboard():
     user_id=session.get('id')
     user =User.query.get(user_id)
 
-    return render_template("student_dashboard.html",user=user)
+    q_history=Score.query.filter_by(user_id=user_id).order_by(Score.attempt_timing.desc()).all()
+    q_attempted=len(q_history)
+    tot_obt_marks=sum(q.tot_score for q in q_history)
+    out_off=sum(len(q.quiz.questions) for q in q_history)
+    avg_per=(tot_obt_marks/out_off)*100  if out_off>0 else 0
+    return render_template("student_dashboard.html",user=user,q_attempted=q_attempted,avg_per=avg_per,q_history=q_history)
+
 
 @app.route('/student_summary')
 def student_summary():
@@ -371,6 +377,13 @@ def user_result(score_id):
     score=Score.query.filter_by(id=score_id).first()
     questions=Question.query.filter_by(quiz_id=score.quiz_id).all()
     return render_template("user_result.html",score=score,questions=questions)
+
+@app.route('/view_detail/<score_id>')
+def view_detail(score_id):
+    score=Score.query.filter_by(id=score_id).first()
+    questions=Question.query.filter_by(quiz_id=score.quiz_id).all()
+    return render_template("view_detail.html",score=score,questions=questions)
+
 
 
 if __name__=='__main__':

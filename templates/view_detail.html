@@ -1,14 +1,16 @@
+
 {% include 'student_sidebar.html'%}
 <br><br>
 {%block content%}
 <div class="container mt-4">
 
-    <h2>Quiz Result </h2>
+    <h2>Quiz Report </h2>
     <h5>ID : {{score.quiz_id}}</h5>
     <h5>Subject : {{score.quiz.chapter.subject_id}}</h5>
-    <h5>Chapter : {{score.quiz.chapter_id}}</h5>  
-    <h5>Score : {{score.tot_score}}</h5>   
-
+    <h5>Chapter : {{score.quiz.chapter_id}}</h5>
+    <h5>Score : {{score.attempt_timing}}</h5>
+    <h5>Score : {{score.tot_score}}</h5>      
+    
     <table class="table table-hover">
         <thead class="table-dark">
           <tr>
@@ -37,6 +39,8 @@
           {%endfor%}
         </tbody>
       </table>
+
+
 </div>
 
 
