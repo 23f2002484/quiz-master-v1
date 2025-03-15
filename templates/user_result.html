@@ -1,0 +1,43 @@
+{% include 'student_sidebar.html'%}
+<br><br>
+{%block content%}
+<div class="container mt-4">
+    
+    <h2>Quiz Result </h2>
+    <h5>ID : {{score.quiz_id}}</h5>
+    <h5>Subject : {{score.quiz.chapter.subject_id}}</h5>
+    <h5>Chapter : {{score.quiz.chapter_id}}</h5>
+    <h5>Score : {{score.tot_score}}</h5>   
+
+    <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Sr No.</th>
+            <th>Question</th>
+            <th>Option A</th>
+            <th>Option B</th>
+            <th>Option C</th>
+            <th>Option D</th>
+            <th>Correct Option</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          {%for question in questions%}
+          <tr>
+            <td>{{loop.index}}</td>
+            <td>{{question.que}}</td>
+            <td>{{question.o_a}}</td>
+            <td>{{question.o_b}}</td>
+            <td>{{question.o_c}}</td>
+            <td>{{question.o_d}}</td>
+            <td>{{question.correct_o}}</td>
+            
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+</div>
+
+
+{%endblock%}

@@ -1,6 +1,6 @@
 from flask import Flask,request,redirect,render_template,session,url_for,flash
-from models import db,User,Subject,Quiz,Question,Chapter
-from datetime import datetime
+from models import db,User,Subject,Quiz,Question,Chapter,Score
+from datetime import datetime,date
 
 
 app =Flask(__name__)
@@ -300,6 +300,19 @@ def manage_question(quiz_id):
     questions =Question.query.filter_by(quiz_id=quiz_id).all()
     return render_template("manage_question.html",questions=questions,quiz_id=quiz_id)
 
+@app.route('/quiz',methods=['GET','POST'])
+def quiz():
+    subjects =Subject.query.all()
+    selected_subject_id=request.form.get('subject')
+    
+    selected_chapter_id=request.form.get('chapter')
+    chapters =Chapter.query.filter_by(subject_id=selected_subject_id).all() if selected_subject_id else []
+    quizzes= Quiz.query.filter(Quiz.chapter_id==selected_chapter_id , Quiz.quiz_date == date.today()).all() if selected_chapter_id else []
+    upcoming_quizzes= Quiz.query.filter(Quiz.quiz_date > date.today()).order_by(Quiz.quiz_date).all()
+
+    return render_template('quiz.html', subjects=subjects, chapters=chapters, quizzes=quizzes, upcoming_quizzes=upcoming_quizzes,selected_subject_id=selected_subject_id, selected_chapter_id=selected_chapter_id)
+
+
 @app.route('/register',methods=['GET','POST'])
 def register():
     if request.method=='GET':
@@ -327,6 +340,37 @@ def student_dashboard():
 
     return render_template("student_dashboard.html",user=user)
 
+@app.route('/student_summary')
+def student_summary():
+    return render_template("student_summary.html")
+@app.route('/start_quiz/<quiz_id>')
+def start_quiz(quiz_id):
+    quiz =Quiz.query.get(quiz_id)
+    questions=Question.query.filter_by(quiz_id=quiz_id).all()
+    return render_template("start_quiz.html",quiz=quiz,questions=questions)
+
+@app.route('/submit_quiz/<quiz_id>',methods=['POST'])
+def submit_quiz(quiz_id):
+    quiz=Quiz.query.get(quiz_id)
+    user_id=session.get('id')
+    questions=Question.query.filter_by(quiz_id=quiz_id).all()
+    score=0
+    for question in questions:
+        user_ans=request.form.get(f'{question.id}')
+        if user_ans and user_ans==question.correct_o:
+            score+=1
+    new_score=Score(quiz_id=quiz_id,user_id=user_id,tot_score=score)
+    db.session.add(new_score)
+    db.session.commit()
+    score=Score.query.order_by(Score.id.desc()).first()
+    return redirect(url_for('user_result',score_id=score.id))
+
+
+@app.route('/user_result/<score_id>')
+def user_result(score_id):
+    score=Score.query.filter_by(id=score_id).first()
+    questions=Question.query.filter_by(quiz_id=score.quiz_id).all()
+    return render_template("user_result.html",score=score,questions=questions)
 
 
 if __name__=='__main__':

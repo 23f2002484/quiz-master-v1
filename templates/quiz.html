@@ -1,0 +1,100 @@
+{% include 'student_sidebar.html'%}
+<br>
+{%block content%}
+<div class="container mt-4">
+
+    <div class="container mt-5">
+        <h2>Upcoming Quiz </h2>
+        <table class="table table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Subject</th>
+                <th>Chapter</th>
+                <th>Date</th>
+                <th>Time Duration</th>
+                <th>Remarks</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              {%for quiz in upcoming_quizzes%}
+              <tr>
+                <td>{{quiz.id}}</td>
+                <td>{{quiz.chapter.subject.name}}</td>
+                <td>{{quiz.chapter.name}}</td>
+                <td>{{quiz.quiz_date.strftime('%Y-%m-%d')}}</td>
+                <td>{{quiz.time_dur}}</td>
+                <td>{{quiz.remarks}}</td>
+                
+              </tr>
+              {%endfor%}
+            </tbody>
+          </table>
+    </div>
+
+<h3 class="mt-4">Find a Quiz</h3>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="subject" class="form-label">Select Subject</label>
+            <select name="subject" id="subject" class="form-control" onchange="this.form.submit()">
+                <option value="">-- Choose Subject --</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}" {% if subject.id == selected_subject_id %} selected {% endif %}>
+                        {{ subject.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if chapters %}
+        <div class="mb-3">
+            <label for="chapter" class="form-label">Select Chapter</label>
+            <select name="chapter" id="chapter" class="form-control" onchange="this.form.submit()">
+                <option value="">-- Choose Chapter --</option>
+                {% for chapter in chapters %}
+                    <option value="{{ chapter.id }}" {% if chapter.id == selected_chapter_id %} selected {% endif %}>
+                        {{ chapter.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% elif selected_subject_id %}
+        <p class="text-muted">No chapter available </p>
+        {% endif %}
+    </form>
+
+    {% if quizzes %}
+        <h3>Available Quizzes</h3>
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Quiz ID</th>
+                    <th>Date</th>
+                    <th>Time Duration</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                <tr>
+                    <td>{{ quiz.id }}</td>
+                    <td>{{ quiz.quiz_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ quiz.time_dur }}</td>
+                    <td>{{ quiz.remarks }}</td>
+                    <td>
+                        <a href="{{ url_for('start_quiz', quiz_id=quiz.id) }}" class="btn btn-primary">Start Quiz</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif selected_chapter_id %}
+        <p class="text-muted">No quizzes available</p>
+    {% endif %}
+</div>
+
+
+{%endblock%}
+
