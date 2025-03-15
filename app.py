@@ -371,6 +371,65 @@ def submit_quiz(quiz_id):
     score=Score.query.order_by(Score.id.desc()).first()
     return redirect(url_for('user_result',score_id=score.id))
 
+@app.route('/search')
+def search():
+    search=request.args.get('search')
+    user=User.query.filter_by(id=search).first()
+    if user:
+        return redirect(url_for('search_user',user_id=user.id))
+    subject=Subject.query.filter_by(id=search).first()
+    if subject:
+        return redirect(url_for('search_subject',subject_id=subject.id))
+    quiz=Quiz.query.filter_by(id=search).first()
+    if quiz:
+        return redirect(url_for('search_quiz',quiz_id=quiz.id))
+    return "Invalid Input"
+
+@app.route('/search_user/<user_id>')
+def search_user(user_id):
+    user=User.query.filter_by(id=user_id).first()
+    return render_template("search_user.html",user=user)
+
+@app.route('/search_subject/<subject_id>')
+def search_subject(subject_id):
+    subject=Subject.query.filter_by(id=subject_id).first()
+    return render_template("search_subject.html",subject=subject)
+
+@app.route('/search_quiz/<quiz_id>')
+def search_quiz(quiz_id):
+    quiz=Quiz.query.filter_by(id=quiz_id).first()
+    return render_template("search_quiz.html",quiz=quiz)
+
+@app.route('/user_search')
+def user_search():
+    search=request.args.get('search')
+    
+    subject=Subject.query.filter_by(id=search).first()
+    if subject:
+        return redirect(url_for('user_search_subject',subject_id=subject.id))
+    chapter=Chapter.query.filter_by(id=search).first()
+    if chapter:
+        return redirect(url_for('user_search_chapter',chapter_id=chapter.id))
+    quiz=Quiz.query.filter_by(id=search).first()
+    if quiz:
+        return redirect(url_for('user_search_quiz',quiz_id=quiz.id))
+    return "Invalid Input"
+
+@app.route('/user_search_chapter/<chapter_id>')
+def user_search_chapter(chapter_id):
+    chapter=Chapter.query.filter_by(id=chapter_id).first()
+    return render_template("user_search_chapter.html",chapter=chapter)
+
+@app.route('/user_search_subject/<subject_id>')
+def user_search_subject(subject_id):
+    subject=Subject.query.filter_by(id=subject_id).first()
+    return render_template("user_search_subject.html",subject=subject)
+
+@app.route('/user_search_quiz/<quiz_id>')
+def user_search_quiz(quiz_id):
+    quiz=Quiz.query.filter_by(id=quiz_id).first()
+    return render_template("user_search_quiz.html",quiz=quiz)
+
 
 @app.route('/user_result/<score_id>')
 def user_result(score_id):

@@ -1,0 +1,15 @@
+{% include 'admin_sidebar.html'%}
+<br><br>
+{%block content%}
+<div class="container mt-4">
+    
+    <h2>Quiz </h2>
+    <h5>ID : {{quiz.id}}</h5>
+    <h5>Chapter : {{quiz.chapter_id}}</h5>
+    <h5>Remarks : {{quiz.remarks}}</h5>
+    <h5>Quiz Date : {{quiz.quiz_date}}</h5> 
+    <h5>Time Duration : {{quiz.time_dur}}</h5>   
+</div>
+
+
+{%endblock%}

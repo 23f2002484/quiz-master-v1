@@ -1,0 +1,17 @@
+{% include 'admin_sidebar.html'%}
+<br><br>
+{%block content%}
+<div class="container mt-4">
+    
+    
+    <h2>User </h2>
+    <h5>ID : {{user.id}}</h5>
+    <h5>Email : {{user.email}}</h5>
+    <h5>Username : {{user.username}}</h5>
+    <h5>Qualification : {{user.qualification}}</h5> 
+    <h5>D.O.B : {{user.date_of_birth}}</h5>  
+     
+</div>
+
+
+{%endblock%}
