@@ -1,1 +1,19 @@
-Admin Summary
+{% include 'admin_sidebar.html'%}
+
+{%block content%}
+<div class="container mt-5">
+    
+
+    {% if img_path1 %}
+    <div class="text-center mt-4">
+        <img src="{{img_path1}}" alt="Summary Chart1" class="img-fluid">
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No quiz data available.</p>
+    {% endif %}
+
+    
+
+
+</div>
+{% endblock %}

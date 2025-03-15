@@ -1,6 +1,11 @@
 from flask import Flask,request,redirect,render_template,session,url_for,flash
 from models import db,User,Subject,Quiz,Question,Chapter,Score
 from datetime import datetime,date
+from sqlalchemy.sql import func
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('Agg')
+import os
 
 
 app =Flask(__name__)
@@ -116,6 +121,45 @@ def add_question(quiz_id):
     
 @app.route('/admin_summary')
 def admin_summary():
+    
+    subjects1=(db.session.query(Subject.name,db.func.max(Score.tot_score/func.coalesce(db.session.query( func.count(Question.id)).filter(Question.quiz_id==Score.quiz_id).scalar_subquery(),1)*100))
+    .join(Chapter,Chapter.subject_id==Subject.id)
+    .join(Quiz,Quiz.chapter_id==Chapter.id)
+    .join(Score,Score.quiz_id==Quiz.id)
+    .group_by(Subject.id).all())
+
+    
+
+    sub_names1=[subject[0] for subject in subjects1]
+    max_score=[subject[1] for subject in subjects1]
+    
+
+    if not sub_names1:
+        flash("No quiz data available","warning")
+        return render_template('admin_summary.html',img_path1=None)
+    
+    
+
+    static_folder=os.path.join(os.getcwd(),"static")
+
+    img_path1=os.path.join(static_folder,f"summary_chart_max_score_vs_subject.png")
+    if sub_names1:
+        plt.figure(figsize=(10,5))
+        plt.bar(sub_names1,max_score,color='skyblue')
+        plt.xlabel("Subjects")
+        plt.ylabel("Max Score")
+        plt.title("Subjects vs Max Score")
+        plt.xticks(rotation=45)
+        plt.savefig(img_path1)
+        plt.close()
+    else:
+        img_path1=None
+
+    
+    return render_template("admin_summary.html",img_path1=url_for('static',filename=f'summary_chart_max_score_vs_subject.png')if img_path1 else None)
+                           
+
+
     
     return render_template("admin_summary.html")
 @app.route('/delete_user/<id>',methods=['POST'])
@@ -348,7 +392,70 @@ def student_dashboard():
 
 @app.route('/student_summary')
 def student_summary():
-    return render_template("student_summary.html")
+    user_id=session['id']
+    subjects1=(db.session.query(Subject.name,db.func.count(Quiz.id))
+    .join(Chapter,Chapter.subject_id==Subject.id)
+    .join(Quiz,Quiz.chapter_id==Chapter.id)
+    .join(Score,Score.quiz_id==Quiz.id)
+    .filter(Score.user_id==user_id)
+    .group_by(Subject.id).all())
+
+    subjects2 = (db.session.query(Subject.name,func.avg(Score.tot_score/func.coalesce(db.session.query( func.count(Question.id)).filter(Question.quiz_id==Score.quiz_id).scalar_subquery(),1)*100).label ("avg_score"))
+    .join(Chapter, Chapter.subject_id == Subject.id)
+    .join(Quiz, Quiz.chapter_id == Chapter.id)
+    .join(Score, Score.quiz_id == Quiz.id)
+    .filter(Score.user_id == user_id)
+    .group_by(Subject.id)
+    .all())
+
+    sub_names1=[subject[0] for subject in subjects1]
+    q_count=[subject[1] for subject in subjects1]
+
+    sub_names2=[subject[0] for subject in subjects2]
+    perform=[subject[1] for subject in subjects2]
+
+    if not sub_names1:
+        flash("No quiz data available","warning")
+        return render_template('student_summary.html',img_path1=None)
+    
+    if not sub_names2:
+        flash("No quiz data available","warning")
+        return render_template('student_summary.html',img_path2=None)
+
+    static_folder=os.path.join(os.getcwd(),"static")
+
+    img_path1=os.path.join(static_folder,f"{user_id}_summary_chart_no_of_quizzes_vs_subject.png")
+    if sub_names1:
+        plt.figure(figsize=(10,5))
+        plt.bar(sub_names1,q_count,color='skyblue')
+        plt.xlabel("Subjects")
+        plt.ylabel("No. of Quizzes")
+        plt.title("Subjects vs No. of quizzes")
+        plt.xticks(rotation=45)
+        plt.savefig(img_path1)
+        plt.close()
+    else:
+        img_path1=None
+
+    img_path2=os.path.join(static_folder,f"{user_id}_summary_chart_performance_vs_subject.png")
+    if sub_names2:
+        plt.figure(figsize=(10,5))
+        plt.bar(sub_names2,perform,color='skyblue')
+        plt.xlabel("Subjects")
+        plt.ylabel("Performance")
+        plt.title("Subjects vs Performance")
+        plt.xticks(rotation=45)
+        plt.savefig(img_path2)
+        plt.close()
+    else:
+        img_path2=None
+    
+    
+
+    return render_template("student_summary.html",img_path1=url_for('static',filename=f'{user_id}_summary_chart_no_of_quizzes_vs_subject.png')if img_path1 else None
+                           ,img_path2=url_for('static',filename=f'{user_id}_summary_chart_performance_vs_subject.png')if img_path2 else None)
+    
+
 @app.route('/start_quiz/<quiz_id>')
 def start_quiz(quiz_id):
     quiz =Quiz.query.get(quiz_id)
