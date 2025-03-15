@@ -1,0 +1,35 @@
+{% include 'admin_sidebar.html'%}
+
+
+<br><br>
+<div class="container mt-5">
+    <h2>Manage User</h2>
+    <table class="table table-hover">
+        <thead class="table-info">
+          <tr>
+            <th>User ID</th>
+            <th>User Name</th>
+            <th>User Email</th>
+            <th>User D.O.B</th>
+            <th>User Qualification</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for user in users%}
+          <tr>
+            <td>{{user.id}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.date_of_birth}}</td>
+            <td>{{user.qualification}}</td>
+            <td>
+            <form action="{{url_for('delete_user',id=user.id)}}" method="post">
+                <button class="btn btn-outline-danger" type="submit">Delete</button>
+            </form>
+            </td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+</div>

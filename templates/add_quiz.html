@@ -1,0 +1,60 @@
+
+    
+    
+    
+
+
+    
+   
+
+
+
+{% include 'admin_sidebar.html'%}
+<div class="d-flex flex-column justify-content-center align-items-center vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card-body">
+                    {%with messages =get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category ,m in messages%}
+                            <div class="alert alert-{{category}} text-center">{{m}}</div>
+                        {%endfor%}
+                    {%endif%}
+                    {%endwith%}
+                    <h2 class="text-center mb-4">Enter Quiz Details</h2>
+                    <form method="post" action="{{url_for('add_quiz')}}">
+                        <div class="mb-3">
+                            <label for="chapter_id" class="form-label">Chapter Id </label>
+                            <select id="chapter_id" class="form-control" name="chapter_id" required>
+                                <option value=""disabled selected>Select Chapter</option>
+                                {% for chapter in chapters%}
+                                    <option value="{{chapter.id}}">{{chapter.id}} : {{chapter.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id" class="form-label">ID</label>
+                            <input type="text" class="form-control" id="id" name="id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <input type="text" class="form-control" id="remarks" name="remarks" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quiz_date" class="form-label">Quiz Date</label>
+                            <input type="date" class="form-control" id="quiz_date" name="quiz_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time_dur" class="form-label">Quiz Date</label>
+                            <input type="time" class="form-control" id="time_dur" name="time_dur" required>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-outline-info w-100">Submit</button>
+                        </div> 
+                    </form>                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

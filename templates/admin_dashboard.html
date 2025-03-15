@@ -1,1 +1,39 @@
-<h2>Admin Dashboard</h2>
+{% include 'admin_sidebar.html'%}
+
+<br><br>
+<div class="container mt-5">
+    <h2>Manage Subject</h2>
+    <table class="table table-hover">
+        <thead class="table-info">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Manage Chapter</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for subject in subjects%}
+          <tr>
+            <td>{{subject.id}}</td>
+            <td>{{subject.name}}</td>
+            <td>{{subject.description}}</td>
+            <td><a href="{{url_for('manage_chapter',subject_id=subject.id)}}"class="btn btn-outline-info">Manage Chapter</a></td>
+            <td>
+            <a href="{{url_for('edit_subject',subject_id=subject.id)}}"class="btn btn-outline-warning me-2 d-inline-block">Edit</a>
+            <form action="{{url_for('delete_subject',subject_id=subject.id)}}" method="post" class="d-inline-block">
+                <button class="btn btn-outline-danger" type="submit">Delete</button>
+            </form>
+            </td>
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
+</div>
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <a href="{{url_for('add_subject')}}" class="btn btn-outline-primary">Add New Subject</a>
+  </div>
+  
+</div>

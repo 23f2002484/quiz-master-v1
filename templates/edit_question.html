@@ -1,0 +1,46 @@
+{% include 'admin_sidebar.html'%}
+<br><br><br>
+<form method="post" action="{{url_for('edit_question',quiz_id=quiz_id,question_id=question.id)}}">
+    {%with messages =get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category ,m in messages%}
+                <div class="alert alert-{{category}} text-center">{{m}}</div>
+            {%endfor%}
+        {%endif%}
+    {%endwith%}
+    <h2>Edit Question</h2>
+    <label for="id"><b>ID : </b></label>
+    <input type="text" id="id" name="id" value="{{question.id}}" required>
+    <br><br>
+
+    <label for="que"><b>Question : </b></label>
+    <input type="text" id="que" name="que" value="{{question.que}}"required>
+    <br><br>
+
+    <label for="o_a"><b>Option A : </b></label>
+    <input type="text" id="o_a" name="o_a" value="{{question.o_a}}" required>
+    <br><br>
+
+    <label for="o_b"><b>Option B : </b></label>
+    <input type="text" id="o_b" name="o_b"value="{{question.o_b}}" required>
+    <br><br>
+
+    <label for="o_c"><b>Option C : </b></label>
+    <input type="text" id="o_c" name="o_c" value="{{question.o_c}}"required>
+    <br><br>
+
+    <label for="o_d"><b>Option D : </b></label>
+    <input type="text" id="o_d" name="o_d" value="{{question.o_d}}"required>
+    <br><br>
+
+    <label for="correct_o"><b>Correct Option : </b></label>
+    <select name="correct_o" id="correct_o">
+        <option value="A" {% if question.correct_o == 'A' %}selected{% endif %}>A</option>
+        <option value="B"{% if question.correct_o == 'B' %}selected{% endif %}>B</option>
+        <option value="C"{% if question.correct_o == 'C' %}selected{% endif %}>C</option>
+        <option value="D"{% if question.correct_o == 'D' %}selected{% endif %}>D</option>
+    </select>
+    
+
+    <input type="submit" value ="Submit">
+</form>

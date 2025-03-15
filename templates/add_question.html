@@ -1,0 +1,60 @@
+
+
+{% include 'admin_sidebar.html'%}
+<div class="d-flex flex-column justify-content-center align-items-center "style=" margin-top: 80px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                
+                <div class="card-body">
+                    {%with messages =get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category ,m in messages%}
+                            <div class="alert alert-{{category}} text-center">{{m}}</div>
+                        {%endfor%}
+                    {%endif%}
+                    {%endwith%}
+                    <h2 class="text-center mb-4">Enter Question Details</h2>
+                    <form method="post" action="{{url_for('add_question',quiz_id=quiz_id)}}">
+                        <div class="mb-3">
+                            <label for="id" class="form-label">ID</label>
+                            <input type="text" class="form-control" id="id" name="id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="que" class="form-label">Question</label>
+                            <input type="text" class="form-control" id="que" name="que" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="o_a" class="form-label">Option A</label>
+                            <input type="text" class="form-control" id="o_a" name="o_a" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="o_b" class="form-label">Option B</label>
+                            <input type="text" class="form-control" id="o_b" name="o_b" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="o_c" class="form-label">Option C</label>
+                            <input type="text" class="form-control" id="o_c" name="o_c" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="o_d" class="form-label">Option D</label>
+                            <input type="text" class="form-control" id="o_d" name="o_d" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="correct_o" class="form-label">Correct Option </label>
+                            <select name="correct_o" class="form-control" id="correct_o">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-outline-info w-100">Submit</button>
+                        </div> 
+                    </form>                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
