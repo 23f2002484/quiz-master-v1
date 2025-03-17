@@ -1,50 +1,57 @@
 {% include 'student_sidebar.html'%}
-<br><br><br>
+
 {% block content %}
-<div class="row">
+<div class="container mt-5 pt-5" >
+  <div class="row justify-content-center">
     <div class="col-md-4">
-        <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">Total number of quizzes</div>
-            <div class="card-body">
-              <h5 class="card-title">{{q_attempted}}</h5>
-              
+      
+      <div class="card shadow-lg text-bg-info mb-4 rounded-lg">
+        <div class="card-header fw-bold text-center">Total number of quizzes</div>
+          <div class="card-body text-center">
+            <h5 class="card-title display-6">{{q_attempted}}</h5>
+                
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+          <div class="card shadow-lg text-bg-info mb-4 rounded-lg">
+            <div class="card-header fw-bold text-center">Performance Rate</div>
+            <div class="card-body text-center">
+              <h5 class="card-title display-6">{{avg_per}}%</h5>
             </div>
           </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">Performance Rate</div>
-            <div class="card-body">
-              <h5 class="card-title">{{avg_per}}%</h5>
-            </div>
+      </div>
+  </div>
+  
+  <div class="mt-5">
+          <h2 class="text-center ">Quiz History</h2>
+          <br>
+          <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+              <thead class="table-info text-center">
+                <tr>
+                  <th>ID</th>
+                  <th>Date of Attempt</th>
+                  <th>Score</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                {%for quiz in q_history%}
+                <tr>
+                  <td>{{quiz.quiz_id}}</td>
+                  <td>{{quiz.attempt_timing.strftime('%y:%m:%d %H:%M:%S')}}</td>
+                  <td>{{quiz.tot_score}}/{{quiz.quiz.questions|length}}</td>
+                  <td>
+                  <a href="{{url_for('view_detail',score_id=quiz.id)}}"class="btn btn-outline-warning me-2 d-inline-block">View</a>
+                  </td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
           </div>
-    </div>
+      </div>
+  
 </div>
-<div>
-    <div class="container mt-5">
-        <h2>Quiz History</h2>
-        <table class="table table-hover">
-            <thead class="table-dark">
-              <tr>
-                <th>ID</th>
-                <th>Date of Attempt</th>
-                <th>Score</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {%for quiz in q_history%}
-              <tr>
-                <td>{{quiz.quiz_id}}</td>
-                <td>{{quiz.attempt_timing}}</td>
-                <td>{{quiz.tot_score}}/{{quiz.quiz.questions|length}}</td>
-                <td>
-                <a href="{{url_for('view_detail',score_id=quiz.id)}}"class="btn btn-outline-warning me-2 d-inline-block">View</a>
-                </td>
-              </tr>
-              {%endfor%}
-            </tbody>
-          </table>
-    </div>
-</div>
+
 {% endblock %}

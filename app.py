@@ -150,6 +150,7 @@ def admin_summary():
         plt.ylabel("Max Score")
         plt.title("Subjects vs Max Score")
         plt.xticks(rotation=45)
+        plt.tight_layout()
         plt.savefig(img_path1)
         plt.close()
     else:
@@ -216,7 +217,7 @@ def edit_quiz(quiz_id):
         new_id=request.form['id']
         exist_quiz=Quiz.query.get(new_id)
         if exist_quiz and str(exist_quiz.id)!=str(quiz.id):
-            flash('Id exists')
+            flash("Id already exists","danger")
             return redirect(url_for('edit_quiz',quiz_id= quiz_id))
         else:
             quiz.id=new_id
@@ -239,7 +240,7 @@ def edit_subject(subject_id):
         new_id=request.form['id']
         exist_sub=Subject.query.get(new_id)
         if exist_sub and str(exist_sub.id)!=str(subject.id):
-            flash('Id exists')
+            flash("Id already exists","danger")
             return redirect(url_for('edit_subject',subject_id=subject_id))
         else:
             subject.id=new_id
@@ -258,7 +259,7 @@ def edit_chapter(chapter_id,subject_id):
         new_id=request.form['id']
         exist_chap=Chapter.query.get(new_id)
         if exist_chap and str(exist_chap.id)!=str(chapter.id):
-            flash('Id exists')
+            flash("Id already exists","danger")
             return redirect(url_for('edit_chapter',subject_id=subject_id,chapter_id=chapter_id))
         else:
             chapter.id=new_id
@@ -277,7 +278,7 @@ def edit_question(question_id,quiz_id):
         new_id=request.form['id']
         exist_que=Question.query.get(new_id)
         if exist_que and str(exist_que.id)!=str(question.id):
-            flash('Id exists')
+            flash("Id already exists","danger")
             return redirect(url_for('edit_question',quiz_id=quiz_id,question_id=question_id))
         else:
             question.id=new_id
@@ -490,6 +491,7 @@ def search():
     quiz=Quiz.query.filter_by(id=search).first()
     if quiz:
         return redirect(url_for('search_quiz',quiz_id=quiz.id))
+        
     return "Invalid Input"
 
 @app.route('/search_user/<user_id>')

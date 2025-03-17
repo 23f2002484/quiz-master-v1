@@ -1,41 +1,50 @@
 {% include 'admin_sidebar.html'%}
-<br><br><br>
-<form method="post" action="{{url_for('edit_quiz',quiz_id=quiz.id)}}">
-    {%with messages =get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category ,m in messages%}
-                <div class="alert alert-{{category}} text-center">{{m}}</div>
-            {%endfor%}
-        {%endif%}
-    {%endwith%}
-    <h2>Edit Quiz</h2>
-    <label for="chapter_id"><b>Chapter Id : </b></label>
-    <select id="chapter_id" name="chapter_id" required>
-        <option value=""disabled selected>Select Chapter</option>
-        {% for chapter in chapters%}
-            <option value="{{chapter.id}}" {% if chapter.id ==quiz.chapter_id %}selected{%endif%}>{{chapter.id}} : {{chapter.name}}</option>
-        {% endfor %}
-    </select>
-    <br><br>
-    <label for="id"><b>ID : </b></label>
-    <input type="text" id="id" name="id" value="{{quiz.id}}" required>
-    <br><br>
+<div class="d-flex flex-column justify-content-center align-items-center vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card-body">
+                    {%with messages =get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category ,m in messages%}
+                            <div class="alert alert-{{category}} text-center">{{m}}</div>
+                        {%endfor%}
+                    {%endif%}
+                    {%endwith%}
+                    <h2 class="text-center mb-4">Edit Quiz</h2>
+                    <form method="post" action="{{url_for('edit_quiz',quiz_id=quiz.id)}}">
+                        <div class="mb-3">
+                            <label for="chapter_id" class="form-label">Chapter Id </label>
+                            <select id="chapter_id" class="form-control" name="chapter_id" required>
+                                <option value=""disabled selected>Select Chapter</option>
+                                {% for chapter in chapters%}
+                                    <option value="{{chapter.id}}"{% if chapter.id ==quiz.chapter_id %}selected{%endif%}>{{chapter.id}} : {{chapter.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id" class="form-label">ID</label>
+                            <input type="text" class="form-control" id="id" name="id" value="{{quiz.id}}"required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <input type="text" class="form-control" id="remarks" name="remarks" value="{{quiz.remarks}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quiz_date" class="form-label">Quiz Date</label>
+                            <input type="date" class="form-control" id="quiz_date" name="quiz_date" value="{{quiz.quiz_date}}"required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="time_dur" class="form-label">Quiz Duration</label>
+                            <input type="time" class="form-control" id="time_dur" name="time_dur" value="{{quiz.time_dur}}"required>
+                        </div>
 
-    <label for="remarks"><b>Remarks : </b></label>
-    <input type="text" id="remarks" name="remarks"value="{{quiz.remarks}}" required>
-    <br><br>
-
-
-    <label for="quiz_date"><b>Quiz Date : </b></label>
-    <input type="date" id="quiz_date" name="quiz_date" value="{{quiz.quiz_date}}" required>
-    <br><br>
-
-    <label for="time_dur"><b>Time Duration : </b></label>
-    <input type="time" id="time_dur" name="time_dur" value="{{quiz.time_dur}}" required>
-    <br><br>
-
-
-
-   
-    <input type="submit" value ="Submit">
-</form>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-outline-info w-100">Submit</button>
+                        </div> 
+                    </form>                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

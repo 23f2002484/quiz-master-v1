@@ -1,13 +1,18 @@
+
 {% include 'admin_sidebar.html'%}
-<br><br>
-{%block content%}
-<div class="container mt-4">
-    
-    <h2>Subject </h2>
-    <h5>ID : {{subject.id}}</h5>
-    <h5>Name : {{subject.name}}</h5>
-    <h5>Description : {{subject.description}}</h5> 
+<div class="d-flex flex-column justify-content-center align-items-center vh-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow-lg border-0 rounded">
+                    <div class="card-body">
+                    <h2 class="text-center mb-4 text-primary">Subject Details</h2>
+                    <h5><strong>ID : </strong>{{subject.id}}</h5>
+                    <h5><strong>Name : </strong> {{subject.name}}</h5>
+                    <h5><strong>Description : </strong>{{subject.description}}</h5>
+                    </div>              
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-
-{%endblock%}
