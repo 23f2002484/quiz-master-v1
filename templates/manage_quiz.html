@@ -1,26 +1,27 @@
 {% include 'admin_sidebar.html'%}
 
-
-<br><br>
-<div class="container mt-5">
-    <h2>Manage Quiz</h2>
-    <br>
-    <table class="table table-hover">
-        <thead class="table-info">
-          <tr>
-            <th>ID</th>
+{% block content %}
+<div class="container mt-5 pt-5" >
+<div class="mt-5">
+  <h2 class="text-center ">Manage Quiz</h2>
+  <br>
+  <div class="table-responsive">
+  <table class="table table-hover table-bordered">
+      <thead class="table-info text-center">
+        <tr>
+          <th>ID</th>
             <th>Chapter ID</th>
             <th>Remarks</th>
             <th>Quiz Date</th>
             <th>Time Duration</th>
             <th>Manage Question</th>
             <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {%for quiz in quizzes%}
-          <tr>
-            <td>{{quiz.id}}</td>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        {%for quiz in quizzes%}
+        <tr>
+          <td>{{quiz.id}}</td>
             <td>{{quiz.chapter_id}}</td>
             <td>{{quiz.remarks}}</td>
             <td>{{quiz.quiz_date}}</td>
@@ -32,15 +33,18 @@
                 <button class="btn btn-outline-danger" type="submit">Delete</button>
             </form>
             </td>
-          </tr>
-          {%endfor%}
-        </tbody>
-      </table>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
 </div>
 
+</div>
 <div class="row justify-content-center">
   <div class="col-md-10">
     <a href="{{url_for('add_quiz')}}" class="btn btn-outline-primary">Add New Quiz</a>
   </div>
   
 </div>
+{% endblock %}

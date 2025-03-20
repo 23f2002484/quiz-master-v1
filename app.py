@@ -433,6 +433,7 @@ def student_summary():
         plt.ylabel("No. of Quizzes")
         plt.title("Subjects vs No. of quizzes")
         plt.xticks(rotation=45)
+        plt.tight_layout()
         plt.savefig(img_path1)
         plt.close()
     else:
@@ -446,6 +447,7 @@ def student_summary():
         plt.ylabel("Performance")
         plt.title("Subjects vs Performance")
         plt.xticks(rotation=45)
+        plt.tight_layout()
         plt.savefig(img_path2)
         plt.close()
     else:

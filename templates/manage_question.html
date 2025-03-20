@@ -1,14 +1,15 @@
 {% include 'admin_sidebar.html'%}
 
-
-<br><br>
-<div class="container mt-5">
-    <h2>Manage Question</h2>
-    <br>
-    <table class="table table-hover">
-        <thead class="table-info">
-          <tr>
-            <th>ID</th>
+{% block content %}
+<div class="container mt-5 pt-5" >
+<div class="mt-5">
+  <h2 class="text-center ">Manage Question</h2>
+  <br>
+  <div class="table-responsive">
+  <table class="table table-hover table-bordered">
+      <thead class="table-info text-center">
+        <tr>
+          <th>ID</th>
             <th>Question</th>
             <th>Option A</th>
             <th>Option B</th>
@@ -16,12 +17,12 @@
             <th>Option D</th>
             <th>Correct Option</th>
             <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {%for question in questions%}
-          <tr>
-            <td>{{question.id}}</td>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        {%for question in questions%}
+        <tr>
+          <td>{{question.id}}</td>
             <td>{{question.que}}</td>
             <td>{{question.o_a}}</td>
             <td>{{question.o_b}}</td>
@@ -34,13 +35,17 @@
                 <button class="btn btn-outline-danger" type="submit">Delete</button>
             </form>
             </td>
-          </tr>
-          {%endfor%}
-        </tbody>
-      </table>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 </div>
 <div class="row justify-content-center">
   <div class="col-md-10">
     <a href="{{url_for('add_question',quiz_id=quiz_id)}}" class="btn btn-outline-primary">Add New Question</a>
   </div>
 </div>
+{% endblock %}

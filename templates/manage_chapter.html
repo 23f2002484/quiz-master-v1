@@ -1,23 +1,24 @@
 {% include 'admin_sidebar.html'%}
 
-
-<br><br>
-<div class="container mt-5">
-    <h2>Manage Chapter</h2>
-    <br>
-    <table class="table table-hover">
-        <thead class="table-info">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {%for chapter in chapters%}
-          <tr>
-            <td>{{chapter.id}}</td>
+{% block content %}
+<div class="container mt-5 pt-5" >
+<div class="mt-5">
+  <h2 class="text-center ">Manage Chapter</h2>
+  <br>
+  <div class="table-responsive">
+  <table class="table table-hover table-bordered">
+      <thead class="table-info text-center">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+        {%for chapter in chapters%}
+        <tr>
+          <td>{{chapter.id}}</td>
             <td>{{chapter.name}}</td>
             <td>{{chapter.description}}</td>
             <td>
@@ -26,10 +27,13 @@
                 <button class="btn btn-outline-danger" type="submit">Delete</button>
             </form>
             </td>
-          </tr>
-          {%endfor%}
-        </tbody>
-      </table>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 </div>
 <div class="row justify-content-center">
   <div class="col-md-10">
@@ -38,3 +42,4 @@
   </div>
   
 </div>
+{% endblock %}

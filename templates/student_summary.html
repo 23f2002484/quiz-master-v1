@@ -1,20 +1,20 @@
 {% include 'student_sidebar.html'%}
 
 {%block content%}
-<div class="container mt-5">
+<div class="container d-flex justify-content-center align-items-center vh-100">
     
 
     {% if img_path1 %}
     <div class="text-center mt-4">
-        <img src="{{img_path1}}" alt="Summary Chart1" class="img-fluid">
+        <img src="{{img_path1}}" alt="Summary Chart1" class="img-fluid rounded shadow-sm borde">
     </div>
     {% else %}
     <p class="text-center text-muted">No quiz data available.</p>
     {% endif %}
-
+    
     {% if img_path2 %}
     <div class="text-center mt-4">
-        <img src="{{img_path2}}" alt="Summary Chart2" class="img-fluid">
+        <img src="{{img_path2}}" alt="Summary Chart2" class="img-fluid rounded shadow-sm borde">
     </div>
     {% else %}
     <p class="text-center text-muted">No quiz data available.</p>
