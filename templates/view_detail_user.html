@@ -1,0 +1,59 @@
+{% include 'admin_sidebar.html'%}
+
+{% block content %}
+<div class="container mt-5 pt-5" >
+  
+  <div class="row justify-content-center">
+    <h2>Quiz Details </h2>
+    <div class="col-md-4">
+      
+      <div class="card shadow-lg border-0 rounded">
+        <div class="card-body">
+        
+    <h5>ID : {{score.quiz_id}}</h5>
+    <h5>Subject : {{score.quiz.chapter.subject_id}}</h5>
+    <h5>Chapter : {{score.quiz.chapter_id}}</h5>
+    <h5>Quiz Time : {{score.attempt_timing}}</h5>
+    <h5>Score : {{score.tot_score}}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mt-5">
+          
+          <br>
+          <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+              <thead class="table-info text-center">
+                <tr>
+                  <th>Sr No.</th>
+                  <th>Question</th>
+                  <th>Option A</th>
+                  <th>Option B</th>
+                  <th>Option C</th>
+                  <th>Option D</th>
+                  <th>Correct Option</th>
+            
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                {%for question in questions%}
+                <tr>
+                  <td>{{loop.index}}</td>
+                  <td>{{question.que}}</td>
+                  <td>{{question.o_a}}</td>
+                  <td>{{question.o_b}}</td>
+                  <td>{{question.o_c}}</td>
+                  <td>{{question.o_d}}</td>
+                  <td>{{question.correct_o}}</td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+      </div>
+  
+</div>
+
+{% endblock %}

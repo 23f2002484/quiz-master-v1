@@ -3,32 +3,37 @@
 {% block content %}
 <div class="container mt-5 pt-5" >
 <div class="mt-5">
-  <h2 class="text-center ">Manage User </h2>
+  <h2 class="text-center ">Manage User</h2>
   <br>
   <div class="table-responsive">
   <table class="table table-hover table-bordered">
       <thead class="table-info text-center">
         <tr>
-          <th>User ID</th>
-          <th>User Name</th>
-          <th>User Email</th>
-          <th>User D.O.B</th>
-          <th>User Qualification</th>
-          <th>Action</th>
+          <th style="width:5%">User ID</th>
+          <th style="width:10%">User Name</th>
+          <th style="width:10%">User Email</th>
+          <th style="width:10%">User D.O.B</th>
+          <th style="width:15%">User Qualification</th>
+          <th style="width:10%">Quiz History</th>
+          <th style="width:10%">Action</th>
         </tr>
       </thead>
       <tbody class="text-center">
         {%for user in users%}
         <tr>
           <td>{{user.id}}</td>
-            <td>{{user.username}}</td>
-            <td>{{user.email}}</td>
-            <td>{{user.date_of_birth}}</td>
-            <td>{{user.qualification}}</td>
+          <td>{{user.username}}</td>
+          <td>{{user.email}}</td>
+          <td>{{user.date_of_birth}}</td>
+          <td>{{user.qualification}}</td>
+            <td><a href="{{url_for('quiz_history',user_id=user.id)}}"class="btn btn-outline-info btn-sm w-100" style="min-width: 130px;">Quiz History</a></td>
             <td>
-            <form action="{{url_for('delete_user',id=user.id)}}" method="post">
-                <button class="btn btn-outline-danger" type="submit">Delete</button>
+              <div class="d-flex justify-content-center align-items-center gap-2">
+           
+            <form action="{{url_for('delete_user',id=user.id)}}" method="post" style="margin:0;">
+                <button class="btn btn-outline-danger btn-sm" type="submit" style="min-width: 70px;">Delete</button>
             </form>
+          </div>
             </td>
         </tr>
         {%endfor%}

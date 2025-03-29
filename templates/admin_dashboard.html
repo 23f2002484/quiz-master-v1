@@ -9,11 +9,11 @@
   <table class="table table-hover table-bordered">
       <thead class="table-info text-center">
         <tr>
-          <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Manage Chapter</th>
-            <th>Action</th>
+          <th style="width:5%">ID</th>
+            <th style="width:10%">Name</th>
+            <th style="width:65%">Description</th>
+            <th style="width:10%">Manage Chapter</th>
+            <th style="width:10%">Action</th>
         </tr>
       </thead>
       <tbody class="text-center">
@@ -22,12 +22,14 @@
           <td>{{subject.id}}</td>
             <td>{{subject.name}}</td>
             <td>{{subject.description}}</td>
-            <td><a href="{{url_for('manage_chapter',subject_id=subject.id)}}"class="btn btn-outline-info">Manage Chapter</a></td>
+            <td><a href="{{url_for('manage_chapter',subject_id=subject.id)}}"class="btn btn-outline-info btn-sm w-100" style="min-width: 130px;">Manage Chapter</a></td>
             <td>
-            <a href="{{url_for('edit_subject',subject_id=subject.id)}}"class="btn btn-outline-warning me-2 d-inline-block">Edit</a>
-            <form action="{{url_for('delete_subject',subject_id=subject.id)}}" method="post" class="d-inline-block">
-                <button class="btn btn-outline-danger" type="submit">Delete</button>
+              <div class="d-flex justify-content-center align-items-center gap-2">
+            <a href="{{url_for('edit_subject',subject_id=subject.id)}}"class="btn btn-outline-warning btn-sm " style="min-width: 70px;">Edit</a>
+            <form action="{{url_for('delete_subject',subject_id=subject.id)}}" method="post" style="margin:0;">
+                <button class="btn btn-outline-danger btn-sm" type="submit" style="min-width: 70px;">Delete</button>
             </form>
+          </div>
             </td>
         </tr>
         {%endfor%}
@@ -36,11 +38,13 @@
   </div>
 </div>
 
-</div>
+
 <div class="row justify-content-center">
-  <div class="col-md-10">
+  <div class="col-md-10 text-center">
     <a href="{{url_for('add_subject')}}" class="btn btn-outline-primary">Add New Subject</a>
   </div>
   
 </div>
+</div>
+
 {% endblock %}

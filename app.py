@@ -6,6 +6,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Agg')
 import os
+import numpy as np
 
 
 app =Flask(__name__)
@@ -31,13 +32,12 @@ def login_page():
     return redirect('/login')
 
 
-@app.route('/admin_dashboard',methods=['GET','POST'])
+@app.route('/admin_dashboard')
 def admin_dashboard():
-    if request.method=='GET':
-        id=session.get('id')
-        user =User.query.filter_by(id=id).first()
-        subjects =Subject.query.all()
-        return render_template("admin_dashboard.html",user=user,subjects=subjects)
+    id=session.get('id')
+    user =User.query.filter_by(id=id).first()
+    subjects =Subject.query.all()
+    return render_template("admin_dashboard.html",user=user,subjects=subjects)
     
 
 
@@ -213,21 +213,13 @@ def delete_question(question_id,quiz_id):
 def edit_quiz(quiz_id):
     quiz=Quiz.query.get(quiz_id)
     if request.method=='POST':
-        
-        new_id=request.form['id']
-        exist_quiz=Quiz.query.get(new_id)
-        if exist_quiz and str(exist_quiz.id)!=str(quiz.id):
-            flash("Id already exists","danger")
-            return redirect(url_for('edit_quiz',quiz_id= quiz_id))
-        else:
-            quiz.id=new_id
-            quiz.remarks=request.form['remarks']
-            quiz.chapter_id=request.form['chapter_id']
-            quiz.quiz_date=datetime.strptime(request.form['quiz_date'],'%Y-%m-%d').date()
-            quiz.time_dur=datetime.strptime(request.form['time_dur'],'%H:%M').strftime("%H:%M")
+        quiz.remarks=request.form['remarks']
+        quiz.chapter_id=request.form['chapter_id']
+        quiz.quiz_date=datetime.strptime(request.form['quiz_date'],'%Y-%m-%d').date()
+        quiz.time_dur=datetime.strptime(request.form['time_dur'],'%H:%M').strftime("%H:%M")
             
-            db.session.commit()
-            return redirect(url_for('manage_quiz'))
+        db.session.commit()
+        return redirect(url_for('manage_quiz'))
     else:
         chapters=Chapter.query.all()
         return render_template("edit_quiz.html",quiz=quiz,chapters=chapters)
@@ -236,18 +228,10 @@ def edit_quiz(quiz_id):
 def edit_subject(subject_id):
     subject =Subject.query.get(subject_id)
     if request.method=='POST':
-        
-        new_id=request.form['id']
-        exist_sub=Subject.query.get(new_id)
-        if exist_sub and str(exist_sub.id)!=str(subject.id):
-            flash("Id already exists","danger")
-            return redirect(url_for('edit_subject',subject_id=subject_id))
-        else:
-            subject.id=new_id
-            subject.name=request.form['name']
-            subject.description=request.form['description']
-            db.session.commit()
-            return redirect(url_for('admin_dashboard'))
+        subject.name=request.form['name']
+        subject.description=request.form['description']
+        db.session.commit()
+        return redirect(url_for('admin_dashboard'))
     else:
         return render_template("edit_subject.html",subject=subject)
 
@@ -255,18 +239,10 @@ def edit_subject(subject_id):
 def edit_chapter(chapter_id,subject_id):
     chapter =Chapter.query.get(chapter_id)
     if request.method=='POST':
-        
-        new_id=request.form['id']
-        exist_chap=Chapter.query.get(new_id)
-        if exist_chap and str(exist_chap.id)!=str(chapter.id):
-            flash("Id already exists","danger")
-            return redirect(url_for('edit_chapter',subject_id=subject_id,chapter_id=chapter_id))
-        else:
-            chapter.id=new_id
-            chapter.name=request.form['name']
-            chapter.description=request.form['description']
-            db.session.commit()
-            return redirect(url_for('manage_chapter',subject_id=subject_id))
+        chapter.name=request.form['name']
+        chapter.description=request.form['description']
+        db.session.commit()
+        return redirect(url_for('manage_chapter',subject_id=subject_id))
     else:
         return render_template("edit_chapter.html",chapter=chapter,subject_id=subject_id)
     
@@ -274,22 +250,14 @@ def edit_chapter(chapter_id,subject_id):
 def edit_question(question_id,quiz_id):
     question=Question.query.get(question_id)
     if request.method=='POST':
-        
-        new_id=request.form['id']
-        exist_que=Question.query.get(new_id)
-        if exist_que and str(exist_que.id)!=str(question.id):
-            flash("Id already exists","danger")
-            return redirect(url_for('edit_question',quiz_id=quiz_id,question_id=question_id))
-        else:
-            question.id=new_id
-            question.que=request.form['que']
-            question.o_a=request.form['o_a']
-            question.o_b=request.form['o_b']
-            question.o_c=request.form['o_c']
-            question.o_d=request.form['o_d']
-            question.correct_o=request.form['correct_o']
-            db.session.commit()
-            return redirect(url_for('manage_question',quiz_id=quiz_id))
+        question.que=request.form['que']
+        question.o_a=request.form['o_a']
+        question.o_b=request.form['o_b']
+        question.o_c=request.form['o_c']
+        question.o_d=request.form['o_d']
+        question.correct_o=request.form['correct_o']
+        db.session.commit()
+        return redirect(url_for('manage_question',quiz_id=quiz_id))
     else:
         return render_template("edit_question.html",question=question,quiz_id=quiz_id)
 
@@ -357,8 +325,20 @@ def quiz():
 
     return render_template('quiz.html', subjects=subjects, chapters=chapters, quizzes=quizzes, upcoming_quizzes=upcoming_quizzes,selected_subject_id=selected_subject_id, selected_chapter_id=selected_chapter_id)
 
+@app.route('/quiz_history/<user_id>')
+def quiz_history(user_id):
+    q_history=Score.query.filter_by(user_id=user_id).order_by(Score.attempt_timing.desc()).all()
+    q_attempted=len(q_history)
+    tot_obt_marks=sum(q.tot_score for q in q_history)
+    out_off=sum(len(q.quiz.questions) for q in q_history)
+    avg_per=(tot_obt_marks/out_off)*100  if out_off>0 else 0
+    avg_per=f"{avg_per:.2f}"
+    q_history=Score.query.filter_by(user_id=user_id).order_by(Score.attempt_timing.desc()).all()
+    return render_template("quiz_history.html",q_history=q_history,q_attempted=q_attempted,avg_per=avg_per)
+
 
 @app.route('/register',methods=['GET','POST'])
+
 def register():
     if request.method=='GET':
         return render_template("register.html")
@@ -388,6 +368,7 @@ def student_dashboard():
     tot_obt_marks=sum(q.tot_score for q in q_history)
     out_off=sum(len(q.quiz.questions) for q in q_history)
     avg_per=(tot_obt_marks/out_off)*100  if out_off>0 else 0
+    avg_per=f"{avg_per:.2f}"
     return render_template("student_dashboard.html",user=user,q_attempted=q_attempted,avg_per=avg_per,q_history=q_history)
 
 
@@ -433,6 +414,8 @@ def student_summary():
         plt.ylabel("No. of Quizzes")
         plt.title("Subjects vs No. of quizzes")
         plt.xticks(rotation=45)
+        max_y=max(q_count) if q_count else 1
+        plt.yticks(np.arange(0,max_y+1,1))
         plt.tight_layout()
         plt.savefig(img_path1)
         plt.close()
@@ -547,6 +530,12 @@ def user_result(score_id):
     score=Score.query.filter_by(id=score_id).first()
     questions=Question.query.filter_by(quiz_id=score.quiz_id).all()
     return render_template("user_result.html",score=score,questions=questions)
+
+@app.route('/view_detail_user/<score_id>')
+def view_detail_user(score_id):
+    score=Score.query.filter_by(id=score_id).first()
+    questions=Question.query.filter_by(quiz_id=score.quiz_id).all()
+    return render_template("view_detail_user.html",score=score,questions=questions)
 
 @app.route('/view_detail/<score_id>')
 def view_detail(score_id):

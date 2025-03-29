@@ -5,19 +5,9 @@
             <div class="col-md-4">
                 
                 <div class="card-body">
-                    {%with messages =get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category ,m in messages%}
-                            <div class="alert alert-{{category}} text-center">{{m}}</div>
-                        {%endfor%}
-                    {%endif%}
-                    {%endwith%}
+                    
                     <h2 class="text-center mb-4">Edit Question</h2>
                     <form method="post" action="{{url_for('edit_question',quiz_id=quiz_id,question_id=question.id)}}">
-                        <div class="mb-3">
-                            <label for="id" class="form-label">ID</label>
-                            <input type="text" class="form-control" id="id" name="id" value="{{question.id}}"required>
-                        </div>
                         <div class="mb-3">
                             <label for="que" class="form-label">Question</label>
                             <input type="text" class="form-control" id="que" name="que" value="{{question.que}}"required>
