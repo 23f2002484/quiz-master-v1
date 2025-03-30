@@ -2,6 +2,64 @@
 
 {% block content %}
 <div class="container mt-5 pt-5" >
+  <h2 class="text-center ">Find a Quiz</h2>
+    <form method="POST">
+
+        <div class="mb-3">
+            <label for="chapter" class="form-label"><h5>Select Chapter</h5></label>
+            <select name="chapter" id="chapter" class="form-control" onchange="this.form.submit()">
+                <option value="">-- Choose Chapter --</option>
+                {% for chapter in chapters %}
+                    <option value="{{ chapter.id }}" {% if chapter.id == selected_chapter_id %} selected {% endif %}>
+                      {{ chapter.id }} : {{ chapter.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+    <div class="mt-5">
+    {% if quizzes %}
+        <h5>Available Quizzes</h5>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+              <thead class="table-info text-center">
+                <tr>
+                    
+                    <th style="width:5%">ID</th>
+                    <th style="width:10%">Chapter ID</th>
+                    <th style="width:42%">Remarks</th>
+                    <th style="width:10%">Quiz Date</th>
+                    <th style="width:10%">Time Duration</th>
+                    <th style="width:13%">Manage Question</th>
+                    <th style="width:10%">Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                {%for quiz in quizzes%}
+                <tr>
+                  <td>{{quiz.id}}</td>
+                  <td>{{quiz.chapter_id}}</td>
+                  <td>{{quiz.remarks}}</td>
+                  <td>{{quiz.quiz_date}}</td>
+                  <td>{{quiz.time_dur}}</td>
+                    <td><a href="{{url_for('manage_question',quiz_id=quiz.id)}}"class="btn btn-outline-info btn-sm w-100" style="min-width: 130px;">Manage Questions</a></td>
+                    <td>
+                      <div class="d-flex justify-content-center align-items-center gap-2">
+                    <a href="{{url_for('edit_quiz',quiz_id=quiz.id)}}"class="btn btn-outline-warning btn-sm " style="min-width: 70px;">Edit</a>
+                    <form action="{{url_for('delete_quiz',quiz_id=quiz.id)}}" method="post" style="margin:0;">
+                        <button class="btn btn-outline-danger btn-sm" type="submit" style="min-width: 70px;">Delete</button>
+                    </form>
+                  </div>
+                    </td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+    {% elif selected_chapter_id %}
+        <p class="text-muted">No quizzes available</p>
+    {% endif %}
+</div>
 <div class="mt-5">
   <h2 class="text-center ">Manage Quiz</h2>
   <br>
@@ -20,7 +78,7 @@
         </tr>
       </thead>
       <tbody class="text-center">
-        {%for quiz in quizzes%}
+        {%for quiz in quiz%}
         <tr>
           <td>{{quiz.id}}</td>
           <td>{{quiz.chapter_id}}</td>

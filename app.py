@@ -128,16 +128,26 @@ def admin_summary():
     .join(Score,Score.quiz_id==Quiz.id)
     .group_by(Subject.id).all())
 
+    subjects2=(db.session.query(Subject.name,db.func.count(Quiz.id))
+    .join(Chapter,Chapter.subject_id==Subject.id)
+    .join(Quiz,Quiz.chapter_id==Chapter.id)
+    .join(Score,Score.quiz_id==Quiz.id)
+    .group_by(Subject.id).all())
     
 
     sub_names1=[subject[0] for subject in subjects1]
     max_score=[subject[1] for subject in subjects1]
     
+    sub_names2=[subject[0] for subject in subjects2]
+    q_count=[subject[1] for subject in subjects2]
 
     if not sub_names1:
         flash("No quiz data available","warning")
         return render_template('admin_summary.html',img_path1=None)
     
+    if not sub_names2:
+        flash("No quiz data available","warning")
+        return render_template('admin_summary.html',img_path2=None)
     
 
     static_folder=os.path.join(os.getcwd(),"static")
@@ -156,8 +166,23 @@ def admin_summary():
     else:
         img_path1=None
 
-    
-    return render_template("admin_summary.html",img_path1=url_for('static',filename=f'summary_chart_max_score_vs_subject.png')if img_path1 else None)
+    img_path2=os.path.join(static_folder,f"summary_chart_no_of_quizzes_vs_subject.png")
+    if sub_names2:
+        plt.figure(figsize=(10,5))
+        plt.bar(sub_names1,q_count,color='skyblue')
+        plt.xlabel("Subjects")
+        plt.ylabel("No. of Quizzes")
+        plt.title("Subjects vs No. of quizzes")
+        plt.xticks(rotation=45)
+        max_y=max(q_count) if q_count else 1
+        plt.yticks(np.arange(0,max_y+1,1))
+        plt.tight_layout()
+        plt.savefig(img_path2)
+        plt.close()
+    else:
+        img_path2=None
+    return render_template("admin_summary.html",img_path1=url_for('static',filename=f'summary_chart_max_score_vs_subject.png')if img_path1 else None,
+                           img_path2=url_for('static',filename=f'summary_chart_no_of_quizzes_vs_subject.png')if img_path2 else None)
                            
 
 
@@ -303,10 +328,15 @@ def manage_chapter(subject_id):
     chapters =Chapter.query.filter_by(subject_id=subject_id).all()
     return render_template("manage_chapter.html",chapters=chapters,subject_id=subject_id)
 
-@app.route('/manage_quiz')
+@app.route('/manage_quiz',methods=['GET','POST'])
 def manage_quiz():
-    quizzes =Quiz.query.all()
-    return render_template("manage_quiz.html",quizzes=quizzes)
+    quiz =Quiz.query.all()
+    
+    chapters =Chapter.query.all()
+    selected_chapter_id=request.form.get('chapter')
+    quizzes= Quiz.query.filter(Quiz.chapter_id==selected_chapter_id ).all() if selected_chapter_id else []
+
+    return render_template("manage_quiz.html",quiz=quiz,chapters=chapters,quizzes=quizzes,selected_chapter_id=selected_chapter_id)
 
 @app.route('/manage_question/<quiz_id>')
 def manage_question(quiz_id):
@@ -317,9 +347,8 @@ def manage_question(quiz_id):
 def quiz():
     subjects =Subject.query.all()
     selected_subject_id=request.form.get('subject')
-    
-    selected_chapter_id=request.form.get('chapter')
     chapters =Chapter.query.filter_by(subject_id=selected_subject_id).all() if selected_subject_id else []
+    selected_chapter_id=request.form.get('chapter')
     quizzes= Quiz.query.filter(Quiz.chapter_id==selected_chapter_id , Quiz.quiz_date == date.today()).all() if selected_chapter_id else []
     upcoming_quizzes= Quiz.query.filter(Quiz.quiz_date > date.today()).order_by(Quiz.quiz_date).all()
 
@@ -477,7 +506,11 @@ def search():
     if quiz:
         return redirect(url_for('search_quiz',quiz_id=quiz.id))
         
-    return "Invalid Input"
+    return redirect(url_for('search_invalid'))
+
+@app.route('/search_invalid')
+def search_invalid():
+    return render_template("search_invalid.html")
 
 @app.route('/search_user/<user_id>')
 def search_user(user_id):
@@ -507,7 +540,11 @@ def user_search():
     quiz=Quiz.query.filter_by(id=search).first()
     if quiz:
         return redirect(url_for('user_search_quiz',quiz_id=quiz.id))
-    return "Invalid Input"
+    return redirect(url_for('user_search_invalid'))
+
+@app.route('/user_search_invalid')
+def user_search_invalid():
+    return render_template("user_search_invalid.html")
 
 @app.route('/user_search_chapter/<chapter_id>')
 def user_search_chapter(chapter_id):
